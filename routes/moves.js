@@ -44,4 +44,38 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
+router.get('/:id/update', (req, res, next) => {
+  const { id } = req.params;
+  Move.findById(id)
+    .then((move) => {
+      res.render('moves/update', { move });
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
+router.post('/:id', (req, res, next) => {
+  const { id } = req.params;
+  const { name, origin, destination } = req.body;
+  Move.findByIdAndUpdate(id, { name, origin, destination })
+    .then((move) => {
+      res.redirect('/moves');
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
+router.post('/:id/delete', (req, res, next) => {
+  const { id } = req.params;
+  Move.findByIdAndDelete(id)
+    .then((move) => {
+      res.redirect('/moves');
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 module.exports = router;

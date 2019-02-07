@@ -1,0 +1,10 @@
+<h2>Edita una mudanza</h2>
+<form action="/moves/<%= move._id %>" method="post">
+  <label for="name">name</label>
+  <input type="text" name="name" id="name" value="<%= move.name %>">
+  <label for="origin">origin</label>
+  <input type="text" name="origin" id="origin" value="<%= move.origin %>">
+  <label for="destination">destination</label>
+  <input type="text" name="destination" id="destination" value="<%= move.destination %>">
+  <input type="submit" value="create">
+</form>

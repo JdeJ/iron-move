@@ -5,6 +5,12 @@
       <a href="/moves/<%= move._id %>">
         <%= move.name %>
       </a>
+      <a href="/moves/<%= move._id %>/update">
+        update
+      </a>
+      <form action="/moves/<%= move._id %>/delete" method="post">
+        <input type="submit" value="delete">
+      </form>
     </li>
   <% })%>
 </ul>
