@@ -4,3 +4,18 @@
 
 <a href="/moves/new">Crear</a>
 <a href="/moves">volver</a>
+<h3>Tus cajas</h3>
+<ul>
+  <% boxes.forEach((box) => { %>
+    <li><%= box.name %> - <%= box.description %></li>
+  <% }) %>
+</ul>
+
+<h3>Añade una caja</h3>
+<form action="/moves/<%= move._id %>/boxes" method="post">
+  <label for="name">name</label>
+  <input type="text" name="name" id="name">
+  <label for="description">description</label>
+  <input type="text" name="description" id="description">
+  <input type="submit" value="crea una caja">
+</form>
