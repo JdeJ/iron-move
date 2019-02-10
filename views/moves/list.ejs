@@ -1,16 +1,20 @@
 <h2>tus mudanzas</h2>
-<ul>
-  <% moves.forEach((move) => { %>
-    <li>
-      <a href="/moves/<%= move._id %>">
-        <%= move.name %>
-      </a>
-      <a href="/moves/<%= move._id %>/update">
-        update
-      </a>
-      <form action="/moves/<%= move._id %>/delete" method="post">
-        <input type="submit" value="delete">
-      </form>
-    </li>
-  <% })%>
-</ul>
+<div class="row">
+  <div class="col">
+    <ul class="list-group">
+      <% moves.forEach((move) => { %>
+        <li class="list-group-item">
+          <a href="/moves/<%= move._id %>">
+            <%= move.name %>
+          </a>
+          <a href="/moves/<%= move._id %>/update">
+            update
+          </a>
+          <form action="/moves/<%= move._id %>/delete" method="post">
+            <input type="submit" value="delete">
+          </form>
+        </li>
+      <% })%>
+    </ul>
+  </div>
+</div>
