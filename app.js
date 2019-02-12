@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const expressLayouts = require('express-ejs-layouts');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const indexRouter = require('./routes/index');
 const movesRouter = require('./routes/moves');
@@ -19,6 +21,8 @@ mongoose.connect('mongodb://localhost:27017/iron-move', { useNewUrlParser: true 
 
 const app = express();
 
+app.locals.title = 'iron-move';
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -30,7 +34,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(session({
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 24 * 60 * 60 // 1 day
+  }),
+  secret: 'ironhack',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+}));
+app.use((req, res, next) => {
+  // app.locals.currentUser = req.session.currentUser;
+  res.locals.currentUser = req.session.currentUser;
+  next();
+});
 app.use('/', indexRouter);
 app.use('/moves', movesRouter);
 

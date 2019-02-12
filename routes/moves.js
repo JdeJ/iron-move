@@ -1,8 +1,12 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const Move = require('../models/move');
 const Box = require('../models/box');
+const middlewares = require('../middlewares');
 
 const router = express.Router();
+
+router.use(middlewares.protectedRoute);
 
 router.get('/new', (req, res, next) => {
   res.render('moves/new');
@@ -10,11 +14,12 @@ router.get('/new', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   const { name, origin, destination } = req.body;
-
+  const userID = req.session.currentUser._id;
   Move.create({
     name,
     origin,
     destination,
+    userID,
   })
     .then((createdObject) => {
       res.redirect('/moves');
@@ -25,7 +30,9 @@ router.post('/', (req, res, next) => {
 });
 
 router.get('/', (req, res, next) => {
-  Move.find()
+  const userID = res.locals.currentUser._id;
+  res.locals.name = 'asdf';
+  Move.find({ userID })
     .then((moves) => {
       res.render('moves/list', { moves });
     })
