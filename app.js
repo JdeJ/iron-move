@@ -1,4 +1,5 @@
 const createError = require('http-errors');
+const flash = require('connect-flash');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -7,6 +8,8 @@ const mongoose = require('mongoose');
 const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+
+const { notifications } = require('./middlewares');
 
 const indexRouter = require('./routes/index');
 const movesRouter = require('./routes/moves');
@@ -46,11 +49,13 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000,
   },
 }));
+app.use(flash());
 app.use((req, res, next) => {
   // app.locals.currentUser = req.session.currentUser;
   res.locals.currentUser = req.session.currentUser;
   next();
 });
+app.use(notifications);
 app.use('/', indexRouter);
 app.use('/moves', movesRouter);
 

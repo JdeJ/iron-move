@@ -13,20 +13,22 @@ router.get('/', (req, res, next) => {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/signup', middlewares.anonRoute ,(req, res, next) => {
-  res.render('auth/signup', { errorMessage: undefined });
+router.get('/signup', middlewares.anonRoute, (req, res, next) => {
+  res.render('auth/signup', { errorMessage: req.flash('error') });
 });
 
 router.post('/signup', middlewares.anonRoute, (req, res, next) => {
   const { username, password } = req.body;
 
   if (username === '' || password === '') {
-    return res.render('auth/signup', { errorMessage: 'no empty fields' });
+    req.flash('error', 'esto realmente funciona, incrédulos');
+    return res.redirect('/signup');
   }
   User.findOne({ username })
     .then((user) => {
       if (user) {
-        res.render('auth/signup', { errorMessage: 'user already exists' });
+        req.flash('error', 'el usuario no existe');
+        res.redirect('/signup');
       } else {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(password, salt);
@@ -44,23 +46,28 @@ router.post('/signup', middlewares.anonRoute, (req, res, next) => {
 });
 
 router.get('/login', middlewares.anonRoute, (req, res, next) => {
-  res.render('auth/login', { errorMessage: undefined });
+  res.render('auth/login', { errorMessage: req.flash('error') });
 });
 
 router.post('/login', middlewares.anonRoute, (req, res, next) => {
   const { username, password } = req.body;
   if (username === '' || password === '') {
-    return res.render('auth/login', { errorMessage: 'no empty fields' });
+    req.flash('error', 'no empty fields');
+    req.flash('info', 'no empty fields');
+    return res.redirect('/login');
   } else {
     User.findOne({ username })
       .then((user) => {
         if (!user) {
-          return res.render('auth/login', { errorMessage: 'el usuario no existe' });
+          req.flash('error', 'usuario no existe');
+          return res.redirect('/login');
         } else if (bcrypt.compareSync(password, user.password)) {
           req.session.currentUser = user;
+          req.flash('success', 'usuario logeado correctamente');
           res.redirect('/moves');
         } else {
-          return res.render('auth/login', { errorMessage: 'username or password incorrect' });
+          req.flash('error', 'usuario incorrecto');
+          return res.redirect('/login');
         }
       })
       .catch((error) => {
