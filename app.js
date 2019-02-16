@@ -9,10 +9,13 @@ const expressLayouts = require('express-ejs-layouts');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
+
 const { notifications } = require('./middlewares');
 
 const indexRouter = require('./routes/index');
 const movesRouter = require('./routes/moves');
+const apiRouter = require('./routes/api');
+
 
 mongoose.connect('mongodb://localhost:27017/iron-move', { useNewUrlParser: true })
   .then(() => {
@@ -20,6 +23,7 @@ mongoose.connect('mongodb://localhost:27017/iron-move', { useNewUrlParser: true 
   })
   .catch((error) => {
     console.log(error);
+    mongoose.connection.close();
   });
 
 const app = express();
@@ -58,6 +62,7 @@ app.use((req, res, next) => {
 app.use(notifications);
 app.use('/', indexRouter);
 app.use('/moves', movesRouter);
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

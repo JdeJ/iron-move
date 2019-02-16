@@ -9,9 +9,27 @@
 </head>
 <body>
   <div class="container">
+    <div id="note"></div>
     <%- include('../partials/notifications') %>
     <!-- Content here -->
     <%- body %>
   </div>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    const url2 = 'http://localhost:3000/api/moves/asdfghjk';
+    axios.get(url2, {
+      name: 'Fred',
+      from: 'Flintstone',
+      to: 'to',
+    })
+      .then(({ data }) => {
+        const note = document.getElementById('note');
+        note.innerHTML = data.name;
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  </script>
 </body>
 </html>
